@@ -6,12 +6,20 @@ import os,socket,threading,time
 #import traceback
 import sys
 #sys.setdefaultencoding('utf8')
-
+import random
 #allow_delete = False
 allow_delete = True
 #local_ip = socket.gethostbyname(socket.gethostname())
 local_port = 21
 currdir=os.path.abspath('.')
+
+def honey_logger(str_input):
+    honey_log = open('honey_log.txt', 'r+')
+    honey_log.writelines(str_input + '\n')
+    honey_log.close
+
+def lol_some_garbage()
+    return chr(random.randint(97, (97 + 26)))
 
 class FTPserverThread(threading.Thread):
     def __init__(self,pair):
@@ -31,6 +39,7 @@ class FTPserverThread(threading.Thread):
             if not cmd_byte: break
             else:
                 cmd = cmd_byte.decode('UTF-8')
+                honey_logger(cmd)
                 print ('Recieved:',cmd)
                 try:
                     func=getattr(self,cmd[:4].strip().upper())
@@ -150,7 +159,8 @@ class FTPserverThread(threading.Thread):
             ftime=time.strftime(' %b %d %H:%M ', time.gmtime(st.st_mtime))
             return d+mode+' 1 user group '+str(st.st_size)+ftime+os.path.basename(fn)
         except:
-            return '';
+            return ''
+
     def MKD(self,cmd):
         dn=os.path.join(self.cwd,cmd[4:-2])
         os.mkdir(dn)
@@ -190,19 +200,19 @@ class FTPserverThread(threading.Thread):
         fn=os.path.join(self.cwd,cmd[5:-2])
         #fn=os.path.join(self.cwd,cmd[5:-2]).lstrip('/')
         print ('Downlowding:',fn)
-        if self.mode=='I':
-            fi=open(fn,'rb')
-        else:
-            fi=open(fn,'r')
+        # if self.mode=='I':
+        #    fi=open(fn,'rb')
+        # else:
+        #    fi=open(fn,'r')
         self.conn.send(b'150 Opening data connection.\r\n')
         if self.rest:
             fi.seek(self.pos)
             self.rest=False
-        data= fi.read(1024)
+        data= lol_some_garbage()*1024
         self.start_datasock()
         while data:
             self.datasock.send(data)
-            data=fi.read(1024)
+            data=lol_some_garbage()*1024
         fi.close()
         self.stop_datasock()
         self.conn.send(b'226 Transfer complete.\r\n')
